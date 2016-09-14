@@ -20,26 +20,28 @@ package org.killbill.billing.payment.api;
 
 public enum PaymentResponse {
     // Card issues
-    INVALID_CARD("The card number, expiry date or cvc is invalid or incorrect"),
-    EXPIRED_CARD("The card has expired"),
-    LOST_OR_STOLEN_CARD("The card has been lost or stolen"),
+    INVALID_CARD(68514, "The card number, expiry date or cvc is invalid or incorrect"),
+    EXPIRED_CARD(18254, "The card has expired"),
+    LOST_OR_STOLEN_CARD(29857, "The card has been lost or stolen"),
 
     // Account issues
-    DO_NOT_HONOR("Do not honor the card - usually a problem with account"),
-    INSUFFICIENT_FUNDS("The account had insufficient funds to fulfil the payment"),
-    DECLINE("Generic payment decline"),
+    DO_NOT_HONOR(136956, "Do not honor the card - usually a problem with account"),
+    INSUFFICIENT_FUNDS(119640, "The account had insufficient funds to fulfil the payment"),
+    DECLINE(28197, "Generic payment decline"),
 
     //Transaction
-    PROCESSING_ERROR("Error processing card"),
-    INVALID_AMOUNT("An invalid amount was entered"),
-    DUPLICATE_TRANSACTION("A transaction with identical amount and credit card information was submitted very recently."),
+    PROCESSING_ERROR(278, "Error processing card"),
+    INVALID_AMOUNT(150, "An invalid amount was entered"),
+    DUPLICATE_TRANSACTION(0, "A transaction with identical amount and credit card information was submitted very recently."),
 
     //Other
-    OTHER("Some other error");
+    OTHER(-1, "Some other error");
 
+    private final int code;
     private final String description;
 
-    private PaymentResponse(final String description) {
+    PaymentResponse(final int code, final String description) {
+        this.code = code;
         this.description = description;
     }
 
@@ -47,6 +49,18 @@ public enum PaymentResponse {
         return description;
     }
 
+    public int getCode() {
+        return code;
+    }
+
+    public static PaymentResponse fromCode(final int code) {
+        for (final PaymentResponse paymentResponse : PaymentResponse.values()) {
+            if (paymentResponse.getCode() == code) {
+                return paymentResponse;
+            }
+        }
+        return OTHER;
+    }
     //	 690118 | Approved
     //	 136956 | Do Not Honor
     //	 119640 | Insufficient Funds
